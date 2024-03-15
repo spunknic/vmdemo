@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "Python: Streamlit",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/notebooks/ui.py",
+            "console": "integratedTerminal",
+            "args": [
+                "run",
+                "ui.py"
+            ]
+
+        }
+    ]
+}
