@@ -29,15 +29,45 @@ def convert_to_quebec_time(original_time):
     # Return the Quebec time with the added hour as a string
     return dt_quebec.strftime("%Y-%m-%d %H:%M:%S %Z%z")
 
-def trust(my_row,Cmax=50,Emax=-50,wC=5,wE=1,th=0.5):
-    C = my_row['Count']   
-    E = my_row['RSSI_avr']
-    T_= (wC*(C/Cmax)+wE*(1-(E/Emax)))/(wC+wE)
-    print(T_,th)
+def norm_RRSI(E):
+    if E<=-60:
+        E= 0
+    elif E>-60 and E<-40:
+        E=abs(100+E)
+    else:
+        E=100
+    return E
+
+def norm_count(C):
+    if C>25:
+        C=50
+    else:
+        C=0
+    return C
+
+
+def trust(my_row,Cmax=50,Emax=100,wC=0.5,wE=0.5,th=0.5):#-40,-60   
+    C = norm_count(my_row['Count']) 
+    E = norm_RRSI(my_row['RSSI_avr'])
+    #T_= (wC*(C/Cmax)+wE*(1-(E/Emax)))/(wC+wE)
+    T_= (wC*(C/Cmax)+wE*(E/Emax))/(wC+wE)
+    
     if T_>=th:
         return True
     else: 
         return False
+    
+def trust2(my_row):
+    C = my_row['Count'] 
+    E = my_row['RSSI_avr']
+    if E>=-60:RE=True
+    else:     RE=False
+
+    if C>=25: RC=True
+    else: RC=False
+
+    if E and C:return True
+    else: return False
         
 class ProcessData():
     def __init__(self,input_txt_path):
@@ -60,7 +90,6 @@ class ProcessData():
   
     def pipeline(self,n=3,min_trust=0.5,inhand_t=2,option='filter',count_att=5,rssi_att=1):
         order       = 'Do nothing'
-        print('Trust   ', min_trust)
         push        = 0
         push_coords = []
         my_output   = []
@@ -69,7 +98,7 @@ class ProcessData():
                 self.observation = self.n_df.iloc[i]
                 
                 #if self.observation['RSSI_avr']>=min_rssi:
-                #print(self.observation)
+                
                 if trust(self.observation,th=min_trust,wC=count_att,wE=rssi_att):
                     my_output.append([self.observation['Latitude'],self.observation['Longitude'],self.observation['Count'],self.observation['ID'],'no filter'])
             
@@ -92,21 +121,26 @@ class ProcessData():
                             
                     if not self.state.empty:
                         if (self.state['ID'].nunique()==1) and (self.state[self.state['state']=='near'].count()[-1]>=inhand_t):#check if same ID has same 
-                            #print(self.state)
+                            
                             order = 'Push to Jam'
                             push+=1
                             self.state['state']='in hand'
                             candidate =self.state.tail(1)
-                            #print('in hand',candidate['ID'].iloc[-1])
+                            
                             push_coords.append([candidate['coords'].iloc[-1][0],candidate['coords'].iloc[-1][1],candidate['Count'].iloc[-1],candidate['ID'].iloc[-1],candidate['state'].iloc[-1]])
                             self.state = self.state.drop(self.state.index) #Reset df
 
                         if ((self.state['ID'].nunique()>1)) and (self.state[self.state['state']=='near'].count()[-1]>=2):
                             #print(self.state)
+                            
                             self.state['near_count'] = self.state.groupby('state')['state'].transform('count')
                             self.state.loc[self.state['near_count'] >= 2, 'state'] = 'truck'
                             self.state.drop(columns=['near_count'], inplace=True)
                             candidate =self.state.tail(1)
+
+                            if trust(self.state.loc[self.state['Count'].idxmax()]):
+                                self.state.loc[self.state['Count'].idxmax()]['state']='in hand'
+
                             push_coords.append([candidate['coords'].iloc[-1][0],candidate['coords'].iloc[-1][1],candidate['Count'].iloc[-1],candidate['ID'].iloc[-1],candidate['state'].iloc[-1]])
                             order = 'Do nothing'
                             self.state = self.state.drop(self.state.index) #Reset df
@@ -120,6 +154,6 @@ class ProcessData():
 
 if __name__ == "__main__":
     pro = ProcessData('C:/Users/juan.david/projects/garda/data/logs_Daniel.txt')      
-    my_result = pro.pipleine(min_trust=0.5,inhand_t=2,n=2,option='filter',count_att=5,rssi_att=1)
+    my_result = pro.pipeline(min_trust=0.7,inhand_t=2,n=2,option='filter',count_att=1,rssi_att=1)
     print(my_result)             
                 

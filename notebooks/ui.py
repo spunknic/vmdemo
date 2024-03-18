@@ -50,7 +50,7 @@ def main():
     
     # File uploader
     file = st.file_uploader("Upload file", type=['csv', 'txt'])
-    st.markdown(r"$$Trust = \frac{w_1 \cdot \frac{C}{C_{max}} + w_2 \cdot (1 - \frac{E}{E_{max}})}{w_1 + w_2}$$", unsafe_allow_html=True)
+    st.markdown(r"$$Trust = \frac{w_1 \cdot \frac{C}{C_{max}} + w_2 \cdot (\frac{E}{E_{max}})}{w_1 + w_2}$$", unsafe_allow_html=True)
     count_att = st.slider("Count Attention (w1)", min_value=1, max_value=10, value=5)
     rssi_att  = st.slider("RSSI Attention  (w2)", min_value=1, max_value=10, value=1)
     min_trust = st.slider("Minimum Trust", min_value=0.001, max_value=1.0, value=0.5)
