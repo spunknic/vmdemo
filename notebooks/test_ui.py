@@ -10,8 +10,9 @@ if uploaded_file is not None:
     df = dataframe
     df                = pd.DataFrame(df, columns=['ID', 'Timestamp', 'Count', 'RSSI_min', 'RSSI_max', 'RSSI_avr', 'RSSI_med', 'Longitude', 'Latitude', 'Flag'])
     n_df              = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
+    st.write(n_df)
     #format ID
-    df['ID']          = df['ID'].apply(lambda x: x[1:])
+    n_df['ID']          = n_df['ID'].apply(lambda x: x[1:])
     #format date
     #format count
     n_df['Count'] = pd.to_numeric(n_df['Count'])
