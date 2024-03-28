@@ -11,9 +11,6 @@ from pathlib import Path
 import random 
 import math
 
-from logic import ProcessData
-
-ROOT = Path(__file__).resolve().parent.parent 
 
 if 'selected_tag' not in st.session_state:
     st.session_state['selected_tag'] = None
@@ -143,7 +140,7 @@ def main():
     df        = dataframe.copy()
     option = st.radio("Option", options=['Raw data', 'Last Position','Last Position Count','Last Position RSSI','Last Position Count and RSSI','Gil Algo','Gil Algo + Time Window'])
     adapt_interface(option)
-    
+
     st.session_state['selected_tag'] = None
 
     if file:
