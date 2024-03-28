@@ -169,37 +169,43 @@ class ProcessData():
         
         for id in ids:
             id_df       = result_gil[result_gil['ID']==id].sort_values('Timestamp')
-            if check_consecutive_rows(id_df,timewindow):
-                result.append(id_df.tail(1))
+            truewindow_=check_consecutive_rows(id_df,timewindow)
+            if len(truewindow_)!=0:
+                result.append(id_df[id_df['Timestamp'] == truewindow_[-1]].tail(1))
+                #result.append(id_df.tail(1))
         concatenated_df = pd.concat(result)
         
         return concatenated_df
 
-def check_consecutive_rows(df, n):
-    if len(df) < n:
-        return False
-    #One way
-    timestamps = df['Timestamp'].apply(lambda x: parse_date_string(x))
-    
-    time_diffs = [(timestamps.iloc[i] - timestamps.iloc[i - 1]).total_seconds() for i in range(1, len(timestamps))]
-    #print(time_diffs)
-    
-    consecutive_count = 1
-    for diff in time_diffs:
-        if diff == 1:
-            consecutive_count += 1
-            if consecutive_count <= n:
-                return True
-        else:
-            consecutive_count = 1
-    
-    return False
-
-    #second way:
-    my_times = df['Timestamp'].unique()
-    for t in my_times:
-        c_df = df[df['Timestamp']==t]
-        if len(c_df) < n:
+def check_consecutive_rows(df,n,my_way=2):
+    if my_way==1:
+        if len(df) < n:
             return False
-        else:
-            pass
+        #One way
+        timestamps = df['Timestamp'].apply(lambda x: parse_date_string(x))
+        
+        time_diffs = [(timestamps.iloc[i] - timestamps.iloc[i - 1]).total_seconds() for i in range(1, len(timestamps))]
+        #print(time_diffs)
+        
+        consecutive_count = 1
+        for diff in time_diffs:
+            if diff == 1:
+                consecutive_count += 1
+                if consecutive_count <= n:
+                    return True
+            else:
+                consecutive_count = 1
+        
+        return False
+    else:
+        #second way:
+        to_return = []
+        my_times = df['Timestamp'].unique()
+        for t in my_times:
+            c_df = df[df['Timestamp']==t]
+            if len(c_df) < n:
+                pass
+            else:
+                to_return.append(t)
+        return to_return
+                
