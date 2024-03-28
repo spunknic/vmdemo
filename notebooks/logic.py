@@ -167,7 +167,7 @@ class ProcessData():
 def check_consecutive_rows(df, n):
     if len(df) < n:
         return False
-    
+    #One way
     timestamps = df['Timestamp'].apply(lambda x: parse_date_string(x))
     
     time_diffs = [(timestamps.iloc[i] - timestamps.iloc[i - 1]).total_seconds() for i in range(1, len(timestamps))]
@@ -183,6 +183,17 @@ def check_consecutive_rows(df, n):
             consecutive_count = 1
     
     return False
+
+    #second way:
+    my_times = df['Timestamp'].unique()
+    for t in my_times:
+        c_df = df[df['Timestamp']==t]
+        if len(c_df) < n:
+            return False
+        else:
+            pass
+
+
         
             
 
