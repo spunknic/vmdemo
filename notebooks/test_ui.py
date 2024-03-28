@@ -147,10 +147,7 @@ def main():
             #Unitary Option
             prodata      = ProcessData(df)
             checkdf=prodata.checkdf()
-            st.write(checkdf['Longitude'])
-            st.write(checkdf['Latitude'])
-            
-            
+
             my_ids       = prodata.one_tag_list()
             my_ids.append('All') 
             selected_tag = st.selectbox('Select tag from list', (my_ids))
