@@ -53,7 +53,7 @@ class ProcessData():
         
         #Others
         n_df = n_df.drop(n_df[(n_df['Longitude'] == 10) & (n_df['Latitude'] == 10)].index)
-        n_df['Timestamp'] = self.n_df['Timestamp'].apply(lambda x: convert_to_quebec_time(x))
+        #n_df['Timestamp'] = self.n_df['Timestamp'].apply(lambda x: convert_to_quebec_time(x))
         
         self.n_df = n_df
     
