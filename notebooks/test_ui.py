@@ -146,6 +146,7 @@ def main():
             st.session_state['file'] = file
             #Unitary Option
             prodata      = ProcessData(df)
+            st.write(prodata)
             my_ids       = prodata.one_tag_list()
             my_ids.append('All') 
             selected_tag = st.selectbox('Select tag from list', (my_ids))
