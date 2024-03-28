@@ -11,13 +11,12 @@ class ProcessData():
         #format RSSI_avr
         n_df['RSSI_avr'] = pd.to_numeric(n_df['RSSI_avr'])
         #format Longitude
-        n_df['Longitude'] = n_df['Longitude'].apply(lambda x: float(x.strip().strip('"')))
-        n_df['Longitude'] = n_df['Longitude'].apply(lambda x: float(x))
+        n_df['Longitude'] = n_df['Longitude'].apply(lambda x: x.strip().strip('"'))
+        n_df['Longitude'] = pd.to_numeric(n_df['Longitude'])
         #format Latitude
-        n_df['Latitude'] = n_df['Latitude'].apply(lambda x: float(x.strip().strip('"')))
-        n_df['Longitude'] = n_df['Longitude'].apply(lambda x: float(x))
-        #format Flag 
-        n_df = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
+        n_df['Latitude'] = n_df['Latitude'].apply(lambda x: x.strip().strip('"'))
+        n_df['Longitude'] = pd.to_numeric(n_df['Longitude'])
+        
         #Others
         #n_df = n_df.drop(n_df[(n_df['Longitude'] == 10) & (n_df['Latitude'] == 10)].index)
         
