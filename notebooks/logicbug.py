@@ -49,7 +49,7 @@ class ProcessData():
         n_df['Longitude'] = pd.to_numeric(n_df['Longitude'])
         #format Latitude
         n_df['Latitude'] = n_df['Latitude'].apply(lambda x: x.strip().strip('"'))
-        n_df['Longitude'] = pd.to_numeric(n_df['Longitude'])
+        n_df['Latitude'] = pd.to_numeric(n_df['Latitude'])
         
         #Others
         n_df = n_df.drop(n_df[(n_df['Longitude'] == 10) & (n_df['Latitude'] == 10)].index)
