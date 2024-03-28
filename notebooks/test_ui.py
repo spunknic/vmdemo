@@ -26,3 +26,10 @@ if uploaded_file is not None:
     #Others
     n_df = n_df.drop(n_df[(n_df['Longitude'] == 10) & (n_df['Latitude'] == 10)].index)
     st.write(n_df)
+    st.write(n_df['Latitude'])
+    print(n_df['Latitude'])
+    print(n_df['Latitude'].iloc[0])
+    print(type(n_df['Latitude'].iloc[0]))
+    print('ok')
+    
+    
