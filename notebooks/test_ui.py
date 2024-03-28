@@ -57,8 +57,7 @@ def format_marker(row,markers):
     'pink',
     'cadetblue',
     'lightgray',
-    'black'
-            ]
+    'black']
     #color format
     if row['ID'] not in markers.keys():
         my_color          = random.choice(colors)
