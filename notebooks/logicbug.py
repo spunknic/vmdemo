@@ -205,7 +205,7 @@ def check_consecutive_rows(df,n,my_way=2):
             c_df = df[df['Timestamp']==t]
             if len(c_df) < n:
                 pass
-            else:
+            elif len(c_df)>=n:
                 to_return.append(t)
         print(to_return)
         return to_return
