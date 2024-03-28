@@ -207,5 +207,6 @@ def check_consecutive_rows(df,n,my_way=2):
                 pass
             else:
                 to_return.append(t)
+        print(to_return)
         return to_return
                 
