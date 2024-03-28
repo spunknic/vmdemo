@@ -63,6 +63,8 @@ class ProcessData():
     
     def one_tag_list(self):
         return self.ids
+    def checkdf(self):
+        return self.n_df
     
     def one_tag_raw(self,tagid):
         if tagid=='':
