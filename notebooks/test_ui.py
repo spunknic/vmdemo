@@ -69,10 +69,14 @@ def format_marker(row,markers):
         row['Color']      = markers[row['ID']]['color']
     
     #if has_same_location(row,markers):
-    st.text(row['Latitude'])
-    exit(0)
+
     if len(markers)>1:
         for marker in markers:
+            st.text(row['Latitude'])
+            st.text(type(row['Latitude']))
+            st.text(markers[marker]['Latitude'])
+            st.text(type(markers[marker]['Latitude']))
+            exit(0)
             check1 = math.isclose(row['Longitude'], markers[marker]['Longitude'], abs_tol=tolerance)
             check2 = math.isclose(row['Latitude'], markers[marker]['Latitude'], abs_tol=tolerance)
             #if (row['Longitude'] == markers[marker]['Longitude']) and (row['Latitude'] == markers[marker]['Latitude']): 
