@@ -128,7 +128,7 @@ def adapt_interface(option):
         st.session_state['Clamp Size']    = st.slider("Clamp Size", min_value=1, max_value=100, value=20)
         st.session_state['Count Limit']   = st.slider("Count Limit", min_value=1, max_value=50, value=50)
         st.session_state['Ratio theshold']= st.slider("Ratio theshold", min_value=1, max_value=50, value=30)
-        st.session_state['In hand Th']= st.slider("In hand theshold", min_value=1, max_value=5, value=2)
+        st.session_state['In hand Th']= st.slider("In hand theshold", min_value=0, max_value=5, value=1)
 
 def main():
     st.title("File Processing App")
