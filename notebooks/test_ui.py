@@ -134,74 +134,75 @@ def main():
     st.title("File Processing App")
     # File uploader
     file   = st.file_uploader("Upload file", type=['txt'])
-    dataframe = pd.read_csv(file)
-    df        = dataframe.copy()
-    option = st.radio("Option", options=['Raw data', 'Last Position','Last Position Count','Last Position RSSI','Last Position Count and RSSI','Gil Algo','Gil Algo + Time Window'])
-    adapt_interface(option)
+    if file is not None:
+        dataframe = pd.read_csv(file)
+        df        = dataframe.copy()
+        option = st.radio("Option", options=['Raw data', 'Last Position','Last Position Count','Last Position RSSI','Last Position Count and RSSI','Gil Algo','Gil Algo + Time Window'])
+        adapt_interface(option)
 
-    st.session_state['selected_tag'] = None
+        st.session_state['selected_tag'] = None
 
-    if file:
-        st.session_state['file'] = file
-        #Unitary Option
-        prodata      = ProcessData(df)
-        my_ids       = prodata.one_tag_list()
-        my_ids.append('All') 
-        selected_tag = st.selectbox('Select tag from list', (my_ids))
+        if file:
+            st.session_state['file'] = file
+            #Unitary Option
+            prodata      = ProcessData(df)
+            my_ids       = prodata.one_tag_list()
+            my_ids.append('All') 
+            selected_tag = st.selectbox('Select tag from list', (my_ids))
 
-        if st.button("Go"):
-            st.text(selected_tag)
-            st.text(option)
-            if option =='Raw data':
-                if selected_tag != st.session_state['previous_selection']:
+            if st.button("Go"):
+                st.text(selected_tag)
+                st.text(option)
+                if option =='Raw data':
+                    if selected_tag != st.session_state['previous_selection']:
 
-                    if selected_tag != 'All':
-                        plot_gps_coordinates(prodata.one_tag_raw(selected_tag))
-                    else:
-                        plot_gps_coordinates(prodata.one_tag_raw(''))
+                        if selected_tag != 'All':
+                            plot_gps_coordinates(prodata.one_tag_raw(selected_tag))
+                        else:
+                            plot_gps_coordinates(prodata.one_tag_raw(''))
 
-            elif option =='Last Position':
-                if selected_tag != st.session_state['previous_selection']:
+                elif option =='Last Position':
+                    if selected_tag != st.session_state['previous_selection']:
 
-                    if selected_tag != 'All':
-                        plot_gps_coordinates(prodata.one_tag_last(selected_tag))
-                    else:
-                        plot_gps_coordinates(prodata.one_tag_last(''))
+                        if selected_tag != 'All':
+                            plot_gps_coordinates(prodata.one_tag_last(selected_tag))
+                        else:
+                            plot_gps_coordinates(prodata.one_tag_last(''))
 
-            elif option == 'Last Position RSSI':
+                elif option == 'Last Position RSSI':
+                    
+                    if selected_tag != st.session_state['previous_selection']:
+
+                        if selected_tag != 'All':
+                            plot_gps_coordinates(prodata.one_tag_last_rssi(selected_tag,st.session_state['rssi_th']))
+                        else:
+                            plot_gps_coordinates(prodata.one_tag_last_rssi('',st.session_state['rssi_th']))  
+
+                elif option == 'Last Position Count':
+                    
+                    if selected_tag != st.session_state['previous_selection']:
+
+                        if selected_tag != 'All':
+                            plot_gps_coordinates(prodata.one_tag_last_count(selected_tag,st.session_state['count_th']))
+                        else:
+                            plot_gps_coordinates(prodata.one_tag_last_count('',st.session_state['count_th'])) 
+
+                elif option =='Last Position Count and RSSI':
+                    if selected_tag != st.session_state['previous_selection']:
+
+                        if selected_tag != 'All':
+                            plot_gps_coordinates(prodata.one_tag_last_count_rssi(selected_tag,st.session_state['rssi_th'],st.session_state['count_th']))
+                        else:
+                            plot_gps_coordinates(prodata.one_tag_last_count_rssi('',st.session_state['rssi_th'],st.session_state['count_th'])) 
+
+                elif option == 'Gil Algo':
+                    plot_gps_coordinates(prodata.gil_algo(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold']))
                 
-                if selected_tag != st.session_state['previous_selection']:
-
-                    if selected_tag != 'All':
-                        plot_gps_coordinates(prodata.one_tag_last_rssi(selected_tag,st.session_state['rssi_th']))
-                    else:
-                        plot_gps_coordinates(prodata.one_tag_last_rssi('',st.session_state['rssi_th']))  
-
-            elif option == 'Last Position Count':
-                
-                if selected_tag != st.session_state['previous_selection']:
-
-                    if selected_tag != 'All':
-                        plot_gps_coordinates(prodata.one_tag_last_count(selected_tag,st.session_state['count_th']))
-                    else:
-                        plot_gps_coordinates(prodata.one_tag_last_count('',st.session_state['count_th'])) 
-
-            elif option =='Last Position Count and RSSI':
-                if selected_tag != st.session_state['previous_selection']:
-
-                    if selected_tag != 'All':
-                        plot_gps_coordinates(prodata.one_tag_last_count_rssi(selected_tag,st.session_state['rssi_th'],st.session_state['count_th']))
-                    else:
-                        plot_gps_coordinates(prodata.one_tag_last_count_rssi('',st.session_state['rssi_th'],st.session_state['count_th'])) 
-
-            elif option == 'Gil Algo':
-                plot_gps_coordinates(prodata.gil_algo(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold']))
-            
-            elif option == 'Gil Algo + Time Window':
-                plot_gps_coordinates(prodata.gil_algo_time_window(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold'],st.session_state['In hand Th']))
-                     
-    else:
-        pass
+                elif option == 'Gil Algo + Time Window':
+                    plot_gps_coordinates(prodata.gil_algo_time_window(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold'],st.session_state['In hand Th']))
+                        
+        else:
+            pass
 
 if __name__ == "__main__":
     main()
