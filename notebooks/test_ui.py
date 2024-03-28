@@ -72,10 +72,10 @@ def format_marker(row,markers):
 
     if len(markers)>1:
         for marker in markers:
-            st.text(row['Latitude'])
-            st.text(type(row['Latitude']))
-            st.text(markers[marker]['Latitude'])
-            st.text(type(markers[marker]['Latitude']))
+            st.text(row['Longitude'])
+            st.text(type(row['Longitude']))
+            st.text(markers[marker]['Longitude'])
+            st.text(type(markers[marker]['Longitude']))
             exit(0)
             check1 = math.isclose(row['Longitude'], markers[marker]['Longitude'], abs_tol=tolerance)
             check2 = math.isclose(row['Latitude'], markers[marker]['Latitude'], abs_tol=tolerance)
