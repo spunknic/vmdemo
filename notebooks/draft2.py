@@ -39,12 +39,7 @@ def norm_RRSI(E):
     return E
 
 def norm_count(C):
-    if C>25:
-        C=50
-    else:
-        C=0
-    return C
-
+        return 50 if C > 25 else 0
 
 def trust(my_row,Cmax=50,Emax=100,wC=0.5,wE=0.5,th=0.5):#-40,-60   
     C = norm_count(my_row['Count']) 
@@ -57,7 +52,7 @@ def trust(my_row,Cmax=50,Emax=100,wC=0.5,wE=0.5,th=0.5):#-40,-60
     else: 
         return False
     
-def trust2(my_row):
+def trust_old(my_row):
     C = my_row['Count'] 
     E = my_row['RSSI_avr']
     if E>=-60:RE=True
@@ -66,7 +61,7 @@ def trust2(my_row):
     if C>=25: RC=True
     else: RC=False
 
-    if E and C:return True
+    if RE and RC:return True
     else: return False
         
 class ProcessData():
@@ -89,16 +84,11 @@ class ProcessData():
         self.observation = pd.DataFrame()
   
     def pipeline(self,n=3,min_trust=0.5,inhand_t=2,option='filter',count_att=5,rssi_att=1):
-        order       = 'Do nothing'
-        push        = 0
         push_coords = []
         my_output   = []
         if option =='all':
             for i in range(len(self.n_df['Timestamp'])):
                 self.observation = self.n_df.iloc[i]
-                
-                #if self.observation['RSSI_avr']>=min_rssi:
-                
                 if trust(self.observation,th=min_trust,wC=count_att,wE=rssi_att):
                     my_output.append([self.observation['Latitude'],self.observation['Longitude'],self.observation['Count'],self.observation['ID'],'no filter'])
             
@@ -121,9 +111,6 @@ class ProcessData():
                             
                     if not self.state.empty:
                         if (self.state['ID'].nunique()==1) and (self.state[self.state['state']=='near'].count()[-1]>=inhand_t):#check if same ID has same 
-                            
-                            order = 'Push to Jam'
-                            push+=1
                             self.state['state']='in hand'
                             candidate =self.state.tail(1)
                             
@@ -131,18 +118,16 @@ class ProcessData():
                             self.state = self.state.drop(self.state.index) #Reset df
 
                         if ((self.state['ID'].nunique()>1)) and (self.state[self.state['state']=='near'].count()[-1]>=2):
-                            #print(self.state)
-                            
                             self.state['near_count'] = self.state.groupby('state')['state'].transform('count')
                             self.state.loc[self.state['near_count'] >= 2, 'state'] = 'truck'
                             self.state.drop(columns=['near_count'], inplace=True)
                             candidate =self.state.tail(1)
 
                             if trust(self.state.loc[self.state['Count'].idxmax()]):
-                                self.state.loc[self.state['Count'].idxmax()]['state']='in hand'
+                                idx_max = self.state['Count'].idxmax()
+                                self.state.at[idx_max, 'state'] = self.state.at[idx_max, 'state'].replace('truck', 'in hand')
 
                             push_coords.append([candidate['coords'].iloc[-1][0],candidate['coords'].iloc[-1][1],candidate['Count'].iloc[-1],candidate['ID'].iloc[-1],candidate['state'].iloc[-1]])
-                            order = 'Do nothing'
                             self.state = self.state.drop(self.state.index) #Reset df
                         else:
                             self.state = self.state.drop(self.state.index) #Reset df
@@ -154,6 +139,6 @@ class ProcessData():
 
 if __name__ == "__main__":
     pro = ProcessData('C:/Users/juan.david/projects/garda/data/logs_Daniel.txt')      
-    my_result = pro.pipeline(min_trust=0.7,inhand_t=2,n=2,option='filter',count_att=1,rssi_att=1)
+    my_result = pro.pipeline(min_trust=0.7,inhand_t=2,n=2,option='filter',count_att=8,rssi_att=3)
     print(my_result)             
                 
