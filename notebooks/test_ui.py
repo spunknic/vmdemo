@@ -11,12 +11,12 @@ if uploaded_file is not None:
     n_df              = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
     #format ID
     n_df['ID']          = n_df['ID'].apply(lambda x: x[1:])
-    #format date
     #format count
     n_df['Count'] = pd.to_numeric(n_df['Count'])
     #format RSSI_avr
     n_df['RSSI_avr'] = pd.to_numeric(n_df['RSSI_avr'])
     #format Longitude
+    st.write(n_df)
     n_df['Longitude'] = pd.to_numeric(n_df['Longitude'])
     #format Latitude
     n_df['Latitude'] = pd.to_numeric(n_df['Latitude'])
