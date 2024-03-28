@@ -123,7 +123,7 @@ def adapt_interface(option):
         st.session_state['Clamp Size']    = st.slider("Clamp Size", min_value=1, max_value=100, value=20)
         st.session_state['Count Limit']   = st.slider("Count Limit", min_value=1, max_value=50, value=50)
         st.session_state['Ratio theshold']= st.slider("Ratio theshold", min_value=1, max_value=50, value=30)
-    elif option == 'Gil Algo + Time Window': 
+    elif option == 'Gil Algo + Last': 
         st.session_state['RSSI limit']    = st.slider("RSSI limit", min_value=1, max_value=100, value=70)
         st.session_state['Clamp Size']    = st.slider("Clamp Size", min_value=1, max_value=100, value=20)
         st.session_state['Count Limit']   = st.slider("Count Limit", min_value=1, max_value=50, value=50)
@@ -137,7 +137,7 @@ def main():
     if file is not None:
         dataframe = pd.read_csv(file)
         df        = dataframe.copy()
-        option = st.radio("Option", options=['Raw data', 'Last Position','Last Position Count','Last Position RSSI','Last Position Count and RSSI','Gil Algo','Gil Algo + Time Window'])
+        option = st.radio("Option", options=['Raw data', 'Last Position','Last Position Count','Last Position RSSI','Last Position Count and RSSI','Gil Algo','Gil Algo + Last'])
         adapt_interface(option)
 
         st.session_state['selected_tag'] = None
@@ -200,7 +200,7 @@ def main():
                 elif option == 'Gil Algo':
                     plot_gps_coordinates(prodata.gil_algo(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold']))
                 
-                elif option == 'Gil Algo + Time Window':
+                elif option == 'Gil Algo + Last':
                     plot_gps_coordinates(prodata.gil_algo_time_window(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold'],st.session_state['In hand Th']))
                         
         else:
