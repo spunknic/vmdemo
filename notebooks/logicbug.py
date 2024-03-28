@@ -21,4 +21,7 @@ class ProcessData():
         #Others
         #n_df = n_df.drop(n_df[(n_df['Longitude'] == 10) & (n_df['Latitude'] == 10)].index)
         
-        return n_df
+        self.n_df = n_df
+    
+    def first(self):
+        return self.n_df

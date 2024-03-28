@@ -9,7 +9,7 @@ if uploaded_file is not None:
     dataframe = pd.read_csv(uploaded_file)
     df        = dataframe.copy()
     prodat = ProcessData(df)
-    st.write(prodat)
+    st.write(prodat.first())
     
     
     
