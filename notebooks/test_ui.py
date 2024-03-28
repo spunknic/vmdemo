@@ -12,6 +12,7 @@ if uploaded_file is not None:
     n_df              = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
     st.write(df)
     st.write(n_df)
+    st.write(dataframe)
     #format ID
     n_df['ID']          = n_df['ID'].apply(lambda x: x[1:])
     #format date
