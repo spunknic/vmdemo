@@ -148,8 +148,8 @@ def main():
             prodata      = ProcessData(df)
             checkdf=prodata.checkdf()
             st.write(checkdf['Longitude'])
-            print(type(checkdf['Longitude'].iloc[0]))
-            print(checkdf['Longitude'].iloc[0])
+            st.write(checkdf['Latitude'])
+            
             
             my_ids       = prodata.one_tag_list()
             my_ids.append('All') 
