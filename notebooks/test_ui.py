@@ -6,8 +6,8 @@ uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
 
     dataframe = pd.read_csv(uploaded_file)
-    
-    df                = pd.DataFrame(dataframe, columns=['ID', 'Timestamp', 'Count', 'RSSI_min', 'RSSI_max', 'RSSI_avr', 'RSSI_med', 'Longitude', 'Latitude', 'Flag'])
+    df        = dataframe.copy()
+    df.columns = ['ID', 'Timestamp', 'Count', 'RSSI_min', 'RSSI_max', 'RSSI_avr', 'RSSI_med', 'Longitude', 'Latitude', 'Flag']
     n_df              = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
     st.write(df)
     st.write(n_df)
