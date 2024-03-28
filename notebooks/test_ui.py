@@ -9,9 +9,6 @@ if uploaded_file is not None:
     df        = dataframe.copy()
     df.columns = ['ID', 'Timestamp', 'Count', 'RSSI_min', 'RSSI_max', 'RSSI_avr', 'RSSI_med', 'Longitude', 'Latitude', 'Flag']
     n_df              = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
-    st.write(df)
-    st.write(n_df)
-    st.write(dataframe)
     #format ID
     n_df['ID']          = n_df['ID'].apply(lambda x: x[1:])
     #format date
