@@ -16,10 +16,9 @@ if uploaded_file is not None:
     #format RSSI_avr
     n_df['RSSI_avr'] = pd.to_numeric(n_df['RSSI_avr'])
     #format Longitude
-    st.write(n_df)
-    n_df['Longitude'] = pd.to_numeric(n_df['Longitude'])
+    n_df['Longitude'] = n_df['Longitude'].astype(float)
     #format Latitude
-    n_df['Latitude'] = pd.to_numeric(n_df['Latitude'])
+    n_df['Latitude'] = n_df['Latitude'].astype(float)
     #format Flag 
     n_df = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
     #Others
