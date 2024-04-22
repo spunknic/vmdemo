@@ -150,7 +150,7 @@ class ProcessData():
             my_last  = id_df_c.tail(1)
             return my_last
         
-    def gil_algo(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,option='median'):
+    def gil_algo(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,option):
         result = []
         for id in self.ids:
             id_df     = self.n_df[self.n_df['ID']==id]
@@ -165,9 +165,9 @@ class ProcessData():
                     result.append(row)
         return pd.DataFrame(result)
     
-    def gil_algo_time_window(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,timewindow,option='median'):
+    def gil_algo_time_window(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,timewindow,option):
         result = []
-        result_gil  = self.gil_algo(RSSIlimit,ClampSize,CountLimit,Ratiotheshold,option=option)
+        result_gil  = self.gil_algo(RSSIlimit,ClampSize,CountLimit,Ratiotheshold,option)
         ids         = list(set(result_gil['ID']))
         
         for id in ids:

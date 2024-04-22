@@ -199,7 +199,7 @@ def main():
                         else:
                             plot_gps_coordinates(prodata.one_tag_last_count_rssi('',st.session_state['rssi_th'],st.session_state['count_th'])) 
 
-                elif option == 'Gil Algo':
+                elif option == 'Gil Algo': 
                     plot_gps_coordinates(prodata.gil_algo(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold'],st.session_state['my_option']))
                 
                 elif option == 'Gil Algo + Last':
