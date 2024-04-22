@@ -158,8 +158,12 @@ class ProcessData():
                 facteurRssi = row['RSSI_avr']+RSSIlimit
                 if option=='median':
                     Rssi0_20    = statistics.median([0,facteurRssi,ClampSize])
+                    print(Rssi0_20)
+                    exit(0)
                 else:
                     Rssi0_20    = max([0,facteurRssi,ClampSize])
+                    print(Rssi0_20)
+                    exit(0)
                 my_hand     = ((row['Count']/CountLimit)*(Rssi0_20/ClampSize))*100
                 if my_hand >=Ratiotheshold:
                     result.append(row)
