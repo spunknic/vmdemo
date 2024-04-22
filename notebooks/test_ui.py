@@ -119,13 +119,13 @@ def adapt_interface(option):
         st.session_state['count_th'] = st.slider("Count threshold", min_value=1, max_value=50, value=25)
         st.session_state['rssi_th'] = st.slider("RSSI_avr threshold", min_value=-100, max_value=0, value=-60)
     elif option == 'Gil Algo':
-        st.session_state['my_option']     = st.radio("Option", options=['median','max']) 
+        st.session_state['my_option']     = st.radio("my_option", options=['median','max']) 
         st.session_state['RSSI limit']    = st.slider("RSSI limit", min_value=1, max_value=100, value=70)
         st.session_state['Clamp Size']    = st.slider("Clamp Size", min_value=1, max_value=100, value=20)
         st.session_state['Count Limit']   = st.slider("Count Limit", min_value=1, max_value=50, value=50)
         st.session_state['Ratio theshold']= st.slider("Ratio theshold", min_value=1, max_value=50, value=30)
     elif option == 'Gil Algo + Last': 
-        st.session_state['my_option']     = st.radio("Option", options=['median','max']) 
+        st.session_state['my_option']     = st.radio("my_option", options=['median','max']) 
         st.session_state['RSSI limit']    = st.slider("RSSI limit", min_value=1, max_value=100, value=70)
         st.session_state['Clamp Size']    = st.slider("Clamp Size", min_value=1, max_value=100, value=20)
         st.session_state['Count Limit']   = st.slider("Count Limit", min_value=1, max_value=50, value=50)
