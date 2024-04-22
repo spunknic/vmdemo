@@ -150,21 +150,24 @@ class ProcessData():
             my_last  = id_df_c.tail(1)
             return my_last
         
-    def gil_algo(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold):
+    def gil_algo(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,option='median'):
         result = []
         for id in self.ids:
             id_df     = self.n_df[self.n_df['ID']==id]
             for index, row in id_df.iterrows():
                 facteurRssi = row['RSSI_avr']+RSSIlimit
-                Rssi0_20    = statistics.median([0,facteurRssi,ClampSize])
+                if option=='median':
+                    Rssi0_20    = statistics.median([0,facteurRssi,ClampSize])
+                else:
+                    Rssi0_20    = max([0,facteurRssi,ClampSize])
                 my_hand     = ((row['Count']/CountLimit)*(Rssi0_20/ClampSize))*100
                 if my_hand >=Ratiotheshold:
                     result.append(row)
         return pd.DataFrame(result)
     
-    def gil_algo_time_window(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,timewindow):
+    def gil_algo_time_window(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,timewindow,option='median'):
         result = []
-        result_gil  = self.gil_algo(RSSIlimit,ClampSize,CountLimit,Ratiotheshold)
+        result_gil  = self.gil_algo(RSSIlimit,ClampSize,CountLimit,Ratiotheshold,option=option)
         ids         = list(set(result_gil['ID']))
         
         for id in ids:
