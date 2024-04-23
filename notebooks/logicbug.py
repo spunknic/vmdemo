@@ -37,7 +37,7 @@ def convert_to_quebec_time(original_time):
 class ProcessData():
     def __init__(self,df):
         df.columns = ['ID', 'Timestamp', 'Count', 'RSSI_min', 'RSSI_max', 'RSSI_avr', 'RSSI_med', 'Longitude', 'Latitude', 'Flag']
-        n_df              = df.drop(columns=['RSSI_min', 'RSSI_max', 'RSSI_med', 'Flag'])
+        n_df              = df.drop(columns=['RSSI_min', 'RSSI_med', 'Flag'])#, 'RSSI_max'
         #format ID
         n_df['ID']          = n_df['ID'].apply(lambda x: x.replace('[', ''))
         #format count
@@ -150,21 +150,23 @@ class ProcessData():
             my_last  = id_df_c.tail(1)
             return my_last
         
-    def gil_algo(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold):
+    def gil_algo(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,option):
         result = []
         for id in self.ids:
             id_df     = self.n_df[self.n_df['ID']==id]
             for index, row in id_df.iterrows():
-                facteurRssi = row['RSSI_avr']+RSSIlimit
-                #Rssi0_20 = statistics.median([0,facteurRssi,ClampSize])
-                Rssi0_20 = int(max([0,facteurRssi,ClampSize]))
-                #if Rssi0_20!=0:
-                #    Rssi0_20 = int(max([0,facteurRssi,ClampSize]))
-                
+                if option =='max':
+                    facteurRssi = row['RSSI_max']+RSSIlimit
+                else:
+                    facteurRssi = row['RSSI_avr']+RSSIlimit
+                Rssi0_20 = statistics.median(sorted([0,facteurRssi,ClampSize]))  
                 my_hand     = ((row['Count']/CountLimit)*(Rssi0_20/ClampSize))*100
                 if my_hand >=Ratiotheshold:
-                    result.append(row)
-        return pd.DataFrame(result)
+                    result.append(row) 
+        res= pd.DataFrame(result)
+        print(res.shape)
+        
+        return res
     
     def gil_algo_time_window(self,RSSIlimit,ClampSize,CountLimit,Ratiotheshold,timewindow):
         result      = []
@@ -211,6 +213,6 @@ def check_consecutive_rows(df,n,my_way=2):
                 pass
             elif len(c_df)>=n:
                 to_return.append(t)
-        print(to_return)
+        #print(to_return)
         return to_return
                 

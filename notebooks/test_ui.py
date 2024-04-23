@@ -92,12 +92,13 @@ def plot_gps_coordinates(my_df):
     for index, row in my_df.iterrows():
         row['note']    = ''
         my_row,markers = format_marker(row,markers)
+        time           = my_row['Timestamp']
         count          = my_row['Count']
         id             = my_row['ID'] 
         rssi           = my_row['RSSI_avr'] 
         color          = my_row['Color']
         note           = my_row['note']
-        popup_text     = f"ID: {id} <br> Count: {count} <br> RSSI: {rssi} <br> note: {note}"
+        popup_text     = f"ID: {id} <br> Count: {count} <br> RSSI: {rssi} <br> time: {time} <br> note: {note}"
         console.append(popup_text)
         folium.Marker([my_row['Latitude'],my_row['Longitude']], popup=popup_text, icon=folium.Icon(color=color,icon_size=(20,20))).add_to(m)
         
@@ -119,7 +120,7 @@ def adapt_interface(option):
         st.session_state['count_th'] = st.slider("Count threshold", min_value=1, max_value=50, value=25)
         st.session_state['rssi_th'] = st.slider("RSSI_avr threshold", min_value=-100, max_value=0, value=-60)
     elif option == 'Gil Algo':
-        #st.session_state['my_option']     = st.radio("my_option", options=['median','max']) 
+        st.session_state['my_option']     = st.radio("my_option", options=['median','max']) 
         st.session_state['RSSI limit']    = st.slider("RSSI limit", min_value=1, max_value=100, value=70)
         st.session_state['Clamp Size']    = st.slider("Clamp Size", min_value=1, max_value=100, value=20)
         st.session_state['Count Limit']   = st.slider("Count Limit", min_value=1, max_value=50, value=50)
@@ -200,7 +201,7 @@ def main():
                             plot_gps_coordinates(prodata.one_tag_last_count_rssi('',st.session_state['rssi_th'],st.session_state['count_th'])) 
 
                 elif option == 'Gil Algo': 
-                    plot_gps_coordinates(prodata.gil_algo(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold']))
+                    plot_gps_coordinates(prodata.gil_algo(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold'],st.session_state['my_option']))
                 
                 elif option == 'Gil Algo + Last':
                     plot_gps_coordinates(prodata.gil_algo_time_window(st.session_state['RSSI limit'],st.session_state['Clamp Size'],st.session_state['Count Limit'],st.session_state['Ratio theshold'],st.session_state['In hand Th']))
