@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Function to parse the file content
 def parse_file(uploaded_file):
@@ -41,22 +42,35 @@ def plot_score_evolution(df, colors):
     
     st.pyplot(fig)
 
-# Function to plot the sum of scores in batches of 'x' scans with consistent colors
-def plot_batch_sum_scores(df, batch_size, colors):
-    df['batch'] = (df['scan_id'] // batch_size) * batch_size  # Group scans into batches
-    batch_sum = df.groupby(['batch', 'tag'])['score'].sum().reset_index()
-
+# Function to plot the sum of scores using convolution for each scan with padding
+def plot_weighted_sum_scores(df, window_size, colors):
     fig, ax = plt.subplots()
 
-    # Plot each tag's batch score sum evolution with assigned colors
-    for tag in batch_sum['tag'].unique():
-        tag_data = batch_sum[batch_sum['tag'] == tag]
-        ax.plot(tag_data['batch'], tag_data['score'], label=tag, color=colors[tag])
-    
+    # For each tag, apply a convolution with padding to handle initial moments
+    for tag in df['tag'].unique():
+        tag_data = df[df['tag'] == tag]
+        scan_ids = tag_data['scan_id'].values
+        scores = tag_data['score'].values
+
+        # Apply padding with the first score value if there are fewer than window_size entries
+        if len(scores) < window_size:
+            padded_scores = np.pad(scores, (window_size - len(scores), 0), 'edge')
+        else:
+            padded_scores = np.pad(scores, (window_size - 1, 0), 'edge')  # Normal padding
+
+        # Convolution: apply a sum filter over the past `window_size` scans (sum instead of average)
+        weights = np.ones(window_size)  # No division by window size to perform sum instead of average
+        weighted_scores = np.convolve(padded_scores, weights, mode='valid')
+
+        # Ensure the length of scan_ids matches the length of weighted_scores
+        scan_ids = scan_ids[:len(weighted_scores)]
+
+        ax.plot(scan_ids, weighted_scores, label=tag, color=colors[tag])
+
     # Labels and legend
-    ax.set_xlabel(f'Scan ID (Grouped by {batch_size})')
+    ax.set_xlabel(f'Scan ID (Window size: {window_size})')
     ax.set_ylabel('Sum of Scores')
-    ax.set_title(f'Sum of Scores in Batches of {batch_size} Scans')
+    ax.set_title(f'Sum of Scores (Convolution) with Window Size {window_size}')
     ax.legend(loc='best', bbox_to_anchor=(1.05, 1), title='Tags')
     
     st.pyplot(fig)
@@ -77,13 +91,13 @@ if uploaded_file is not None:
     unique_tags = top_10_df['tag'].unique()
     colors = {tag: plt.cm.get_cmap('tab10')(i) for i, tag in enumerate(unique_tags)}
     
-    # Add a number input for batch size
-    batch_size = st.number_input("Enter batch size (default 5):", min_value=1, value=5, step=1)
+    # Add a number input for convolution window size
+    window_size = st.number_input("Enter convolution window size (default 5):", min_value=1, value=5, step=1)
 
     # Display both plots at the top
-    st.write("Score Evolution and Batch Sum Scores")
+    st.write("Score Evolution and Sum of Scores")
     plot_score_evolution(top_10_df, colors)
-    plot_batch_sum_scores(top_10_df, batch_size, colors)
+    plot_weighted_sum_scores(top_10_df, window_size, colors)
     
     # Display the "in hand" decision records in a separate table
     st.write("Tag in Hand Decisions")
