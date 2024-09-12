@@ -2,13 +2,11 @@ import streamlit as st
 import pandas as pd
 from logicbug import ProcessData
 
-
 import streamlit as st
 import folium
 from streamlit_folium import folium_static
 import random 
 import math
-
 
 if 'selected_tag' not in st.session_state:
     st.session_state['selected_tag'] = None
@@ -101,15 +99,11 @@ def plot_gps_coordinates(my_df):
         popup_text     = f"ID: {id} <br> Count: {count} <br> RSSI: {rssi} <br> time: {time} <br> note: {note}"
         console.append(popup_text)
         folium.Marker([my_row['Latitude'],my_row['Longitude']], popup=popup_text, icon=folium.Icon(color=color,icon_size=(20,20))).add_to(m)
-        
-        #m.save(str(index)+"_.html")
-        #to_animate.append(str(index)+"_.html")
+
 
     folium_static(m)
     st.write(str([r for r in console]))
-    #m.save("random_locations_map.png")
-    #m.save("random_locations_map.html  ")
-
+ 
 def adapt_interface(option):
 
     if option =='Last Position Count':
